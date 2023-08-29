@@ -7,16 +7,16 @@ import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.TestPropertySource;
 
 import com.swamy.entity.Employee;
 
-import jakarta.transaction.Transactional;
-
-@SpringBootTest
-@Transactional
+@TestPropertySource("classpath:db.properties")
+@DataJpaTest
 public class EmployeeRepositoryTests {
 
 	@Autowired
@@ -29,50 +29,67 @@ public class EmployeeRepositoryTests {
 		employee = new Employee(1, "swamy", 56000.00, "Hyd");
 	}
 
+	@Order(1)
 	@Test
-	public void testSaveEmployee() {
+	public void whenEmployeeObj_thenReturnSavedEmployee() {
 
 		Employee savedEmployee = employeeRepository.save(employee);
 
-		assertThat(savedEmployee.getEmployeeId()).isGreaterThan(0);
+		Employee empObj = employeeRepository.findById(savedEmployee.getEmployeeId()).get();
+
+		assertThat(empObj.getEmployeeName()).isEqualTo(employee.getEmployeeName());
 	}
 
+	@Order(2)
 	@Test
-	public void testGetAllEmployees() {
+	public void whenFindAll_thenReturnEmployeesList() {
 
 		employeeRepository.save(employee);
-		List<Employee> list = employeeRepository.findAll();
-		assertThat(list.size()).isGreaterThan(0);
+
+		List<Employee> employees = employeeRepository.findAll();
+
+		assertThat(employees.size()).isGreaterThan(0);
 	}
 
+	@Order(3)
 	@Test
-	public void testGetEmployeeById() {
+	public void whenFindById_ThenReturnEmployee() {
 
-		Employee savedEmployee = employeeRepository.save(employee);
-		Employee existingEmpObj = employeeRepository.findById(savedEmployee.getEmployeeId()).get();
-		assertThat(existingEmpObj.getEmployeeId()).isGreaterThan(0);
+		Employee empObj = employeeRepository.save(employee);
+
+		Employee employeeObject = employeeRepository.findById(empObj.getEmployeeId()).get();
+
+		assertEquals(employeeObject.getEmployeeName(), employee.getEmployeeName());
 	}
 
+	@Order(4)
 	@Test
-	public void testUpdateEmployee() {
+	public void whenDeleteById_thenReturnNothing() {
 
-		Employee savedEmployee = employeeRepository.save(employee);
-		Employee existingEmpObj = employeeRepository.findById(savedEmployee.getEmployeeId()).get();
-		existingEmpObj.setEmployeeName("SWAMY.M");
-		existingEmpObj.setEmployeeSalary(78000.00);
-		existingEmpObj.setEmployeeAddress("KNR");
-		Employee updatedEmployee = employeeRepository.save(existingEmpObj);
-		assertEquals("SWAMY.M", updatedEmployee.getEmployeeName());
-	}
+		Employee employeeObj = employeeRepository.save(employee);
 
-	@Test
-	public void testDeleteEmployeeById() {
+		employeeRepository.deleteById(employeeObj.getEmployeeId());
 
-		Employee savedEmployee = employeeRepository.save(employee);
-		Employee existingEmpObj = employeeRepository.findById(savedEmployee.getEmployeeId()).get();
-		employeeRepository.deleteById(existingEmpObj.getEmployeeId());
-		Optional<Employee> optEmp = employeeRepository.findById(existingEmpObj.getEmployeeId());
+		Optional<Employee> optEmp = employeeRepository.findById(employeeObj.getEmployeeId());
 		assertThat(optEmp).isEmpty();
+
+//		List<Employee> empsList = employeeRepository.findAll();
+		
+//		assertThat(empsList).isEmpty();
 	}
 
+	@Order(5)
+	@Test
+	public void whenEmployeeObject_thenReturnUpdatedEmployee() {
+
+		Employee savedEmployee = employeeRepository.save(employee);
+
+		Employee employeeObj = employeeRepository.findById(savedEmployee.getEmployeeId()).get();
+
+		employeeObj.setEmployeeName("TARAK");
+
+		Employee updatedEmployee = employeeRepository.save(employeeObj);
+
+		assertThat(updatedEmployee.getEmployeeName()).isEqualTo("TARAK");
+	}
 }

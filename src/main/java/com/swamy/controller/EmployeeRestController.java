@@ -1,5 +1,7 @@
 package com.swamy.controller;
 
+import static com.swamy.utils.AppConstants.EMPLOYEE_DELETION_SUCCEEDED;
+
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -48,7 +50,6 @@ public class EmployeeRestController {
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> deleteEmployeeById(@PathVariable("id") Integer employeeId) {
-		employeeService.deleteEmployee(employeeId);
-		return new ResponseEntity<>("Employee Deleted Successfully With Id : " + employeeId, HttpStatus.OK);
+		return new ResponseEntity<>(employeeService.deleteEmployee(employeeId), HttpStatus.OK);
 	}
 }

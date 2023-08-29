@@ -1,5 +1,8 @@
 package com.swamy.service.impl;
 
+import static com.swamy.utils.AppConstants.EMPLOYEE_DELETION_SUCCEEDED;
+import static com.swamy.utils.AppConstants.EMPLOYEE_NOT_FOUND;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.swamy.dto.EmployeeDto;
 import com.swamy.entity.Employee;
 import com.swamy.exception.ResourceNotFoundException;
+import com.swamy.props.AppProperties;
 import com.swamy.repository.EmployeeRepository;
 import com.swamy.service.EmployeeService;
 
@@ -21,6 +25,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 	private EmployeeRepository employeeRepository;
 
 	private ModelMapper modelMapper;
+
+	private AppProperties appProperties;
 
 	@Override
 	public EmployeeDto saveEmployee(EmployeeDto employeeDto) {
@@ -44,8 +50,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Override
 	public EmployeeDto getEmployeeById(Integer employeeId) {
 
-		Employee employee = employeeRepository.findById(employeeId).orElseThrow(
-				() -> new ResourceNotFoundException(String.format("Employee Not Found With Id : %s ", employeeId)));
+		Employee employee = employeeRepository.findById(employeeId).orElseThrow(() -> new ResourceNotFoundException(
+				String.format(appProperties.getMessages().get(EMPLOYEE_NOT_FOUND), employeeId)));
 
 		return modelMapper.map(employee, EmployeeDto.class);
 	}
@@ -53,8 +59,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Override
 	public EmployeeDto updateEmployee(Integer employeeId, EmployeeDto employeeDto) {
 
-		Employee existingEmployee = employeeRepository.findById(employeeId).orElseThrow(
-				() -> new ResourceNotFoundException(String.format("Employee Not Found With Id : %s ", employeeId)));
+		Employee existingEmployee = employeeRepository.findById(employeeId)
+				.orElseThrow(() -> new ResourceNotFoundException(
+						String.format(appProperties.getMessages().get(EMPLOYEE_NOT_FOUND), employeeId)));
 
 		existingEmployee.setEmployeeName(employeeDto.getEmployeeName());
 		existingEmployee.setEmployeeSalary(employeeDto.getEmployeeSalary());
@@ -66,12 +73,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
-	public void deleteEmployee(Integer employeeId) {
+	public String deleteEmployee(Integer employeeId) {
 
-		employeeRepository.findById(employeeId).orElseThrow(
-				() -> new ResourceNotFoundException(String.format("Employee Not Found With Id : %s ", employeeId)));
+		employeeRepository.findById(employeeId).orElseThrow(() -> new ResourceNotFoundException(
+				String.format(appProperties.getMessages().get(EMPLOYEE_NOT_FOUND), employeeId)));
 
 		employeeRepository.deleteById(employeeId);
+		return EMPLOYEE_DELETION_SUCCEEDED + employeeId;
 	}
 
 }
