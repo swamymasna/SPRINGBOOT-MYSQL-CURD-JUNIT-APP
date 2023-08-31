@@ -22,7 +22,7 @@ import com.swamy.dto.EmployeeDto;
 import com.swamy.service.EmployeeService;
 
 @WebMvcTest
-public class EmployeeRestControllerTests {
+public class EmployeeRestControllerTest {
 
 	@MockBean
 	private EmployeeService employeeService;

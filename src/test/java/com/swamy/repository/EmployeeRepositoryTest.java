@@ -17,7 +17,7 @@ import com.swamy.entity.Employee;
 
 @TestPropertySource("classpath:db.properties")
 @DataJpaTest
-public class EmployeeRepositoryTests {
+public class EmployeeRepositoryTest {
 
 	@Autowired
 	private EmployeeRepository employeeRepository;

@@ -19,7 +19,7 @@ import com.swamy.entity.Employee;
 import com.swamy.repository.EmployeeRepository;
 
 @SpringBootTest
-public class EmployeeServiceTests {
+public class EmployeeServiceTest {
 
 	@MockBean
 	private EmployeeRepository employeeRepository;
