@@ -3,15 +3,12 @@ package com.swamy.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -40,9 +37,8 @@ public class EmployeeServiceTests {
 		employee = new Employee(1, "swamy", 56000.00, "Hyd");
 	}
 
-	@Order(1)
 	@Test
-	public void testSaveEmployee() {
+	public void whenSaveEmployee_thenReturnSavedEmployee() {
 		
 		when(employeeRepository.save(employee)).thenReturn(employee);
 		EmployeeDto savedEmployee = employeeService.saveEmployee(employeeDto);
@@ -50,9 +46,8 @@ public class EmployeeServiceTests {
 		assertEquals(employee.getEmployeeId(), savedEmployee.getEmployeeId());
 	}
 
-	@Order(2)
 	@Test
-	public void testGetAllEmployees() {
+	public void whenGetAllEmployees_thenEmployeesList() {
 
 		List<Employee> list = List.of(employee);
 		when(employeeRepository.findAll()).thenReturn(list);
@@ -62,9 +57,8 @@ public class EmployeeServiceTests {
 		assertThat(employeesList.size() != 0);
 	}
 
-	@Order(3)
 	@Test
-	public void testGetEmployeeById() {
+	public void whenGetEmployeeById_thenReturnEmployee() {
 		
 		when(employeeRepository.findById(employee.getEmployeeId())).thenReturn(Optional.of(employee));
 		
@@ -73,9 +67,8 @@ public class EmployeeServiceTests {
 		assertEquals(employee.getEmployeeId(), employeeObj.getEmployeeId());
 	}
 
-	@Order(4)
 	@Test
-	public void testUpdateEmployee() {
+	public void whenUpdateEmployee_thenReturnUpdatedEmployee() {
 		
 		when(employeeRepository.findById(employee.getEmployeeId())).thenReturn(Optional.of(employee));
 		when(employeeRepository.save(employee)).thenReturn(employee);
@@ -89,9 +82,8 @@ public class EmployeeServiceTests {
 		assertEquals("M.SWAMY", updatedEmployee.getEmployeeName());
 	}
 
-	@Order(5)
 	@Test
-	public void testDeleteEmployee() {
+	public void whenDeleteEmployeeById_thenReturnNothing() {
 
 //		when(employeeRepository.findById(employee.getEmployeeId())).thenReturn(Optional.of(employee));
 //		employeeService.deleteEmployee(employeeDto.getEmployeeId());
