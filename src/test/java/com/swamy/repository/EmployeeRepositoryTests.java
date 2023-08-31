@@ -74,7 +74,6 @@ public class EmployeeRepositoryTests {
 		assertThat(optEmp).isEmpty();
 
 //		List<Employee> empsList = employeeRepository.findAll();
-		
 //		assertThat(empsList).isEmpty();
 	}
 
